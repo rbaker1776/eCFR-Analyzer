@@ -31,3 +31,7 @@ I hope to provide transparency into how I approached the project, including any 
 - eFCR looks like a bit of a mess
 
 ** TODO **
+
+- Probe data for features, trends, etc.
+- Should be simple enough to find word counts per agency, will tackle that challenge first
+- Leaving for training @ 5:55PM
