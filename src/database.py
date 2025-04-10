@@ -124,11 +124,17 @@ def ecfr_build_query(title, subtitle, chapter, subchapter, part):
 
     return query, params
 
-def ecfr_query(title=None, subtitle=None, chapter=None, subchapter=None, part=None):
+def ecfr_query(params):
     conn = db_connect()
     cursor = conn.cursor()
 
-    query, params = ecfr_build_query(title, subtitle, chapter, subchapter, part)
+    title = params.get("title", None)
+    subtitle = params.get("subtitle", None)
+    chapter = params.get("chapter", None)
+    subchapter = params.get("subchapter", None)
+    part = params.get("part", None)
+
+    query, params = ecfr_build_query(title,subtitle,chapter,subchapter,part)
     cursor.execute(query, params)
     rows = cursor.fetchall()
     n_words = sum([row[5] for row in rows])
@@ -227,15 +233,32 @@ def fetch_all():
     agencies = fetch_agencies()
     names = [a.name for a in agencies]
     short_names = [a.short_name for a in agencies]
-    n_childs = [ 0 ] * len(agencies)
+    n_childs =[len(a.children) for a in agencies]
+
     n_sections = [ 0 ] * len(agencies)
     n_words = [ 0 ] * len(agencies)
     n_covids = [ 0 ] * len(agencies)
+
+    for i, agency in enumerate(agencies):
+        for ref in agency.cfr_references:
+            stats = ecfr_query(ref)
+            n_sections[i] += stats["n_sections"]
+            n_words[i] += stats["n_words"]
+            n_covids[i] += stats["n_covid_paragraphs"]
+        for child in agency.children:
+            for ref in child.cfr_references:
+                stats = ecfr_query(ref)
+                n_sections[i] += stats["n_sections"]
+                n_words[i] += stats["n_words"]
+                n_covids[i] += stats["n_covid_paragraphs"]
+
     return zip(names, short_names, n_childs, n_sections, n_words, n_covids)
 
 
 if __name__ == "__main__":
-    create_ecfr_counts_table()
-    create_agency_table()
-    ecfr_init()
-    agency_init()
+    print(fetch_agencies()[5].children)
+    #create_ecfr_counts_table()
+    #create_agency_table()
+    #ecfr_init()
+    #agency_init()
+    pass
