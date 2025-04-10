@@ -7,7 +7,7 @@ I hope to provide transparency into how I approached the project, including any 
 
 ---
 
-## April 8 @ 4:45 PM
+## April 9 @ 4:45 PM
 
 **Actions**
 
@@ -23,6 +23,7 @@ I hope to provide transparency into how I approached the project, including any 
 - Initialized git repo
 - Read thru eFCR API documentation to understand services provided
     - https://www.ecfr.gov/developers/documentation/api/v1#/
+- Leaving for training @ 5:55PM
 
 **Thoughts**
 
@@ -34,4 +35,21 @@ I hope to provide transparency into how I approached the project, including any 
 
 - Probe data for features, trends, etc.
 - Should be simple enough to find word counts per agency, will tackle that challenge first
-- Leaving for training @ 5:55PM
+
+## April 9 @ 10:00 PM
+
+- Scanned the eCFR website more completely to get a better understanding of the data
+- Leaving @ 10:40 PM to sleep
+
+## April 10 @ 4:30 AM
+
+**Actions**
+
+- Implemented 'Agency' class to encapsulate data related to agencies
+    - ecfr/agency.py
+    - Not strictly needed at the moment, could just use dict. But seems good for possible extensions
+    - I think this should me more a 'struct' than a 'class', so to speak... should basically be plain old data. Functionality will be within the client script
+- Implemented some basic API calls to analyze the data in Python
+    - ecfr/client.py
+    - Counting agencies as well as their children... 
+- Seems like I will use the cfr_references field for each agency to find the word count and other interesting features
