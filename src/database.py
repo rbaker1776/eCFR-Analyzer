@@ -220,8 +220,22 @@ def agency_query(name=None, short_name=None, sortable_name=None):
     }
 
 
+def fetch_all():
+    # =================================================================================
+    #  Agency Name | Short Name | N Children | N Sections | N Words | N Covid Mentions
+    # =================================================================================
+    agencies = fetch_agencies()
+    names = [a.name for a in agencies]
+    short_names = [a.short_name for a in agencies]
+    n_childs = [ 0 ] * len(agencies)
+    n_sections = [ 0 ] * len(agencies)
+    n_words = [ 0 ] * len(agencies)
+    n_covids = [ 0 ] * len(agencies)
+    return zip(names, short_names, n_childs, n_sections, n_words, n_covids)
+
+
 if __name__ == "__main__":
     create_ecfr_counts_table()
     create_agency_table()
-    print(agency_query(name="Department of State"))
-    #ecfr_init()
+    ecfr_init()
+    agency_init()
