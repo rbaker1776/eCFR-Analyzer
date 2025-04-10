@@ -2,7 +2,7 @@ import requests
 import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from agency import Agency
+from database.agency import Agency
 
 
 BASE_URL = "https://www.ecfr.gov"
