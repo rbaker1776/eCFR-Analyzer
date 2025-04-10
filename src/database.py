@@ -134,6 +134,10 @@ def ecfr_query(title=None, subtitle=None, chapter=None, subchapter=None, part=No
     n_words = sum([row[5] for row in rows])
     n_sections = sum([row[6] for row in rows])
     n_covid_paragraphs = sum([row[7] for row in rows])
+
+    conn.commit()
+    conn.close()
+
     return {
         "n_words": n_words,
         "n_sections": n_sections,
@@ -179,10 +183,11 @@ def agency_insert_data(name, short_name, display_name, sortable_name, slug, chil
 def agency_init():
     agencies = fetch_agencies()
     for a in agencies:
+        print(a.name)
         agency_insert_data(a.name, a.short_name, a.display_name, a.sortable_name, a.slug, str(a.children), str(a.cfr_references))
 
 
-def agency_query(name=None, short_name=None, sortable_name=None):
+def build_agency_query(name=None, short_name=None, sortable_name=None):
     query = "SELECT * FROM agencies WHERE 1=1"
     params = []
 
@@ -202,17 +207,21 @@ def agency_query(name=None, short_name=None, sortable_name=None):
     conn = db_connect()
     cursor = conn.cursor()
 
-    query, params = agency_query(name, short_name, sortable_name)
+    query, params = build_agency_query(name, short_name, sortable_name)
     cursor.execute(query, params)
     agency = cursor.fetchall()[0]
 
+    conn.commit()
+    conn.close()
+
     return {
         "children": agency[6],
+        "cfr_references": agency[7],
     }
 
 
 if __name__ == "__main__":
     create_ecfr_counts_table()
     create_agency_table()
-    agency_init()
+    print(agency_query(name="Department of State"))
     #ecfr_init()
