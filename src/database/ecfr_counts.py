@@ -1,5 +1,5 @@
 import sqlite3
-from client import title_xml
+from client import title_xml, word_count
 from database.dbutils import db_connect
 from database.page import Page
 
@@ -58,22 +58,30 @@ def ecfr_process_elements(parent, tag):
         elements = parent.findall(f".//DIV{tag}")
         if elements:
             for element in elements:
-                levels[tag-1] = element
+                if tag == 2: current_page.subtitle = element.attrib['N']
+                elif tag == 3: current_page.chapter = element.attrib['N']
+                elif tag == 4: current_page.subchapter = element.attrib['N']
+                elif tag == 5: current_page.part = element.attrib['N']
                 ecfr_process_elements(element, tag + 1)
         else:
-            levels[tag-1] = None
+            if tag == 2: current_page.subtitle = ""
+            elif tag == 3: current_page.chapter = parent.attrib['N']
+            elif tag == 4: current_page.subchapter = parent.attrib['N']
+            elif tag == 5: current_page.part = parent.attrib['N']
             ecfr_process_elements(parent, tag + 1)
 
 
 def ecfr_db_init():
-    for title in range(1, 51):
+    for title in range(35, 40):
         print(f"(ecfr_db_init): processing title {title}...")
-        try:
-            xml = title_xml(title)
-            levels[0] = title
-            ecfr_process_elements(xml, 2)
-        except Exception as e:
-            print(e)
+        if title == 35: # title 35 is reserved
+            continue
+        #try:
+        xml = title_xml(title)
+        current_page.title = title 
+        ecfr_process_elements(xml, 2)
+        #except Exception as e:
+        #    print(e)
 
 
 def ecfr_build_query(page: Page):
@@ -121,4 +129,4 @@ def ecfr_query(page: Page):
 
 
 if __name__ == "__main__":
-    pass
+    ecfr_db_init()

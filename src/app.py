@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index.html", agencies = fetch_all())
+    return render_template("index.html", agencies=fetch_all())
 
 
 if __name__ == "__main__":

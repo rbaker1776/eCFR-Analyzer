@@ -105,7 +105,7 @@ def agency_query(agency: Agency = None):
     conn.close()
 
     return [{
-        "name": agency[4], # use the sortable name
+        "name": agency[3], # use the display name
         "abbrev": agency[2],
         "children": agency_parse_children(agency[6]),
         "cfr_references": eval(agency[7]),

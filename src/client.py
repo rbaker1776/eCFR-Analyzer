@@ -47,16 +47,14 @@ def versioner_full_url(title: int) -> str:
     return f"{BASE_URL}/api/versioner/v1/full/{date.strftime('%Y-%m-%d')}/title-{title}.xml"
 
 def title_xml(title: int) -> ET.Element:
-    timeout: int = 60 # seconds
-    try:
-        response = requests.get(versioner_full_url(title), timeout=timeout)
-        s = ET.fromstring(response.content)
-        return s
-    except requests.exceptions.Timeout:
-        print(f"Request for title {title} xml timed out after {timeout} seconds")
-    except requests.exceptions.RequestException as e:
-        print(f"An error occurred fetching title {title} xml: {e}")
-
+    timeout: int = 60 * 60 # seconds
+    response = requests.get(f"https://www.govinfo.gov/bulkdata/ECFR/title-{title}/ECFR-title{title}.xml", timeout=timeout, stream=True)
+    xml_content = b""
+    for chunk in response.iter_content(chunk_size=1024 * 1024):
+        if chunk:
+            xml_content += chunk
+    s = ET.fromstring(xml_content)
+    return s
 
 def word_count(xml: ET.Element) -> int:
     paragraphs = xml.findall(".//P")
