@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, Flask, request
 import sqlite3
 from app.database.database import fetch_all
-from app.services.utils import format_number
+from app.services.utils import format_number, get_completion_date
 
 
 main_bp = Blueprint("main", __name__)
@@ -26,9 +26,11 @@ def index():
     for agency in agencies:
         agency["children"].sort(key=get_sort_value, reverse=(sort_order == "down"))
 
+    total_word_count = sum([agency["word_count"] + sum([child["word_count"] for child in agency["children"]]) for agency in agencies])
+    finish_date = get_completion_date(total_word_count)
     meta = {
         "section_count": format_number(sum([agency["section_count"] + sum([child["section_count"] for child in agency["children"]]) for agency in agencies])),
-        "word_count": format_number(sum([agency["word_count"] + sum([child["word_count"] for child in agency["children"]]) for agency in agencies])),
+        "word_count": format_number(total_word_count),
         "covid_count": format_number(sum([agency["covid_count"] + sum([child["covid_count"] for child in agency["children"]]) for agency in agencies])),
     }
 
@@ -49,5 +51,6 @@ def index():
         amendment_months = [k for k, v in sorted_dates],
         amendment_counts = [v for k, v in sorted_dates],
         covid_months = [k for k, v in sorted_covid_dates],
-        covid_counts = [v for k, v in sorted_covid_dates]
+        covid_counts = [v for k, v in sorted_covid_dates],
+        finish_date = finish_date
     )
