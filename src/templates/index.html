@@ -58,6 +58,11 @@
             <canvas id="lineChart"></canvas>
         </div>
 
+        <h2 style="text-align: center;">Monthly Data Over Time</h2>
+        <div style="max-height: 30vh; padding: 2rem;min-height:30rem">
+            <canvas id="lineChart2"></canvas>
+        </div>
+
         <h1 class="text-center">Government Agencies</h1>
         
         <div class="mb-3">
@@ -137,6 +142,9 @@
 
     const amendmentData = {{ amendment_counts|tojson }}
     const amendmentLabels = {{ amendment_months|tojson }}
+
+    const covidAmendmentData = {{ covid_counts|tojson }}
+    const covidAmendmentLabels = {{ covid_months|tojson }}
 
     </script>
     <script src="../static/core.js"></script>

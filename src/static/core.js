@@ -148,3 +148,41 @@ const chart = new Chart(amendment_ctx, {
         }
     }
 });
+
+
+covid_ctx = document.getElementById('lineChart2').getContext('2d');
+
+const chart2 = new Chart(covid_ctx, {
+    type: 'line',
+    data: {
+        labels: covidAmendmentLabels,
+        datasets: [{
+            label: "Total Regulatory Amendments",
+            data: covidAmendmentData,
+            borderColor: '#fdbb24',
+            backgroundColor: 'rgba(251, 130, 28, 0.2)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false, // control height freely
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Date (YYYY-MM)'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Total Regulatory Amendments Passed'
+                }
+            }
+        }
+    }
+});

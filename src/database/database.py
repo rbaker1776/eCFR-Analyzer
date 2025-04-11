@@ -42,7 +42,6 @@ def fetch_agencies() -> dict:
 def fetch_amendment_dates() -> dict:
     amendments = amendment_query()
     dates = [amendment["amendment_date"] for amendment in amendments]
-    print(len(dates))
     months = [f"{i:4}-{j:02}" for i in range(2003, 2026) for j in range(1, 13)]
     counts = Counter(date[:7] for date in dates)
     for month in months:
@@ -52,10 +51,25 @@ def fetch_amendment_dates() -> dict:
     return counts
 
 
+def fetch_covid_amendments() -> dict:
+    amendments = amendment_query()
+    amendments = [a for a in amendments if any(term in a["name"].lower() for term in ["covid", "covid19", "covid-19"])]
+
+    dates = [amendment["amendment_date"] for amendment in amendments]
+    months = [f"{i:4}-{j:02}" for i in range(2003, 2026) for j in range(1, 13)]
+    counts = Counter(date[:7] for date in dates)
+    for month in months:
+        if month not in counts:
+            counts[month] = 0
+    counts = { k: v for k, v in counts.items() if k >= "2019-01-01" }
+    return counts
+
+
 def fetch_all() -> dict:
     return {
         "agencies": fetch_agencies(),
         "amendment_dates": fetch_amendment_dates(),
+        "covid_amendment_dates": fetch_covid_amendments(),
     }
 
 

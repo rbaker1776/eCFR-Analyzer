@@ -12,6 +12,7 @@ def index():
     data = fetch_all()
     agencies = data["agencies"]
     amendment_dates = data["amendment_dates"]
+    covid_dates = data["covid_amendment_dates"]
 
     sort_key = request.args.get("sort", "section_count")
     sort_order = request.args.get("order", "down")
@@ -39,13 +40,16 @@ def index():
             child["pretty_section_count"] = format_number(child["section_count"])
 
     sorted_dates = sorted(amendment_dates.items())
+    sorted_covid_dates = sorted(covid_dates.items())
 
     return render_template(
         "index.html",
         agencies=agencies,
         meta=meta,
         amendment_months = [k for k, v in sorted_dates],
-        amendment_counts = [v for k, v in sorted_dates]
+        amendment_counts = [v for k, v in sorted_dates],
+        covid_months = [k for k, v in sorted_covid_dates],
+        covid_counts = [v for k, v in sorted_covid_dates]
     )
 
 
