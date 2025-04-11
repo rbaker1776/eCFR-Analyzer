@@ -26,7 +26,7 @@ def index():
     for agency in agencies:
         agency["children"].sort(key=get_sort_value, reverse=(sort_order == "down"))
 
-    total_word_count = sum([agency["word_count"] + sum([child["word_count"] for child in agency["children"]]) for agency in agencies])
+    total_word_count = sum([agency["word_count"] for agency in agencies])
     finish_date = get_completion_date(total_word_count)
     meta = {
         "section_count": format_number(sum([agency["section_count"] + sum([child["section_count"] for child in agency["children"]]) for agency in agencies])),
@@ -52,5 +52,6 @@ def index():
         amendment_counts = [v for k, v in sorted_dates],
         covid_months = [k for k, v in sorted_covid_dates],
         covid_counts = [v for k, v in sorted_covid_dates],
-        finish_date = finish_date
+        finish_date = finish_date,
+        total_words = total_word_count
     )

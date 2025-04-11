@@ -52,7 +52,7 @@
 
         <div class="my-5" style="max-height: 50vh; padding: 2rem; margin: 0 auto;">
             <div class="my-1">
-                <h2>Word Count Distribution by Agency</h2>
+                <h2>Word Count per Agency</h2>
                 <p>
                 Which agencies have the most to say-and maybe don't know when to stop.
                 </p>
@@ -71,12 +71,14 @@
         <div class="my-5" style="max-height: 45vh; padding: 2rem; margin: 0 auto;">
             <div class="my-1">
                 <h2>COVID Related Regulatory Amendments Over Time</h2>
-                <p>A timeline of how federal regulations shifted in the wake of COVID-19.</p>
+                <p>
+                A timeline of COVID-19 federal regulation deployment.
+                </p>
             </div>
             <canvas id="covid-amendments-chart"></canvas>
         </div>
 
-        <div class="container my-5">
+        <div class="container my-5" style="position: relative">
             <div class="my-2">
                 <h1>Government Agencies</h1>
             </div>
@@ -159,6 +161,7 @@
     const covidAmendmentData = {{ covid_counts|tojson }}
     const covidAmendmentLabels = {{ covid_months|tojson }}
 
+    const total_words = {{ total_words }}
     </script>
     <script src="../static/core.js"></script>
     </div>

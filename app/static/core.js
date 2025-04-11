@@ -41,70 +41,63 @@ function search_table()
 }
 
 
-
-// group entries < .9% into other
-const total = chart_data.reduce((sum, val) => sum + val, 0);
-
-const groupedLabels = [];
-const groupedData = [];
-let otherTotal = 0;
-
-chart_labels.forEach((label, index) => {
-    const value = chart_data[index];
-    const percent = value / total;
-
-    if (percent < 0.009) {
-        otherTotal += value;
-    } else {
-        groupedLabels.push(label);
-        groupedData.push(value);
-    }
+const combinedData = chart_labels.map((label, idx) => {
+    return { label: label, value: chart_data[idx] };
 });
 
-if (otherTotal > 0) {
-    groupedLabels.push("Other");
-    groupedData.push(otherTotal);
-}
+// Sort by value descending and take top 20
+const top20 = combinedData
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 20);
 
-const pie_ctx = document.getElementById('sectionPieChart').getContext('2d');
+// Separate labels and values again
+const topLabels = top20.map(item => item.label);
+const topValues = top20.map(item => item.value);
 
-const sectionPieChart = new Chart(pie_ctx, {
-    type: 'pie',
+// Generate gradient colors from orange (#FFA500) to yellow (#FFFF00)
+const gradientColors = topValues.map((_, idx) => {
+    const ratio = idx / (topValues.length - 1);
+    const r = 255;
+    const g = Math.round(165 + (255 - 165) * ratio);
+    const b = 0;
+    return `rgb(${r}, ${g}, ${b})`;
+});
+
+const bar_ctx = document.getElementById('sectionPieChart').getContext('2d');
+
+const sectionBarChart = new Chart(bar_ctx, {
+    type: 'bar',
     data: {
-        labels: groupedLabels,
+        labels: topLabels,
         datasets: [{
-            label: 'Sections per Agency',
-            data: groupedData,
-            backgroundColor: [
-                "#FFD700", "#FFC300", "#FFB000", "#FFA500", "#FF8C00",
-                "#DAA520", "#B8860B", "#E1C16E", "#F0E68C", "#FFFACD",
-                "#FFD700", "#FFC300", "#FFB000", "#FFA500", "#FF8C00"
-            ].slice(0, groupedLabels.length),
-
+            label: 'Word Count per Agency',
+            data: topValues,
+            backgroundColor: gradientColors,
             borderColor: '#fff',
             borderWidth: 1
         }]
     },
     options: {
         responsive: true,
-        maintainAspectRatio: false, // control height freely
+        maintainAspectRatio: false,
+        indexAxis: 'x', // vertical bars
         plugins: {
-            legend: {
-                position: 'right',
-                labels: {
-                    font: {
-                        size: 16
-                    }
-                }
-            },
             tooltip: {
                 callbacks: {
                     label: function(context) {
-                        const total = context.chart._metasets[0].total;
-                        const value = context.parsed;
+                        const total = total_words;
+                        const value = context.parsed.y ?? context.parsed.x;
                         const percentage = ((value / total) * 100).toFixed(2);
                         return `${context.label}: ${value.toLocaleString()} words (${percentage}%)`;
                     }
+                }
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
                 }
             }
         }
@@ -157,7 +150,7 @@ const covid_amendments_chart = new Chart(covid_ctx, {
     data: {
         labels: covidAmendmentLabels,
         datasets: [{
-            label: "Total Regulatory Amendments",
+            label: "COVID Related Regulatory Amendments",
             data: covidAmendmentData,
             borderColor: '#fdbb24',
             backgroundColor: 'rgba(251, 130, 28, 0.2)',
@@ -180,7 +173,7 @@ const covid_amendments_chart = new Chart(covid_ctx, {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Total Regulatory Amendments Passed'
+                    text: 'Total COVID Related Regulatory Amendments Passed'
                 }
             }
         }
