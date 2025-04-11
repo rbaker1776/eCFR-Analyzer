@@ -87,3 +87,9 @@ Fortunately, the eCFR API makes it straightforward to retrieve a list of amendme
 I could then sort these values and create a graph of amendments per month.
 Interestingly, there is a very large spike in amendments at the end of 2016.
 This could potentially be an artifact of the data-the eCFR only guarantees full coverage from January 2017 onward-but it might also reflect a real uptick in regulatory activity related to the political transition at that time.
+
+### Duration
+
+I estimate that this project took around 10 hours of focused work from start to finish.
+That includes time spent analyzing and exploring the data before I initialized the Git repository.
+I also expect that similar projects will come together more quickly in the future - this one involved a lot of firsts, and the learning curve was front-loaded.
