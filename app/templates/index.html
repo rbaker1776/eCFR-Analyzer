@@ -24,7 +24,7 @@
                     <div class="card shadow-lg border-0">
                         <div class="card-body">
                             <h1 class="display-4">{{ meta["section_count"] }}</h1>
-                            <p style="font-size: 14pt;">Total Sections</p>
+                            <p style="font-size: 14pt;">Total Regulations<sup>1</sup></p>
                         </div>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                     <div class="card shadow-lg border-0">
                         <div class="card-body">
                             <h1 class="display-4">{{ meta["word_count"] }}</h1>
-                            <p style="font-size: 14pt;">Total Words</p>
+                            <p style="font-size: 14pt;">Total Words<sup>2</sup></p>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                     <div class="card shadow-lg border-0">
                         <div class="card-body">
                             <h1 class="display-4">{{ meta["covid_count"] }}</h1>
-                            <p style="font-size: 14pt;">COVID Mentions</p>
+                            <p style="font-size: 14pt;">COVID Mentions<sup>3</sup></p>
                         </div>
                     </div>
                 </div>
@@ -141,7 +141,14 @@
                 {% endfor %}
             </tbody>
         </table>
-        </div>
+    </div>
+    <div class="container my-5">
+    <ol>
+        <li>For the purposes of this project, a "regulation" is defined broadly as any content corresponding to a section-level header in the eCFR.</li>
+        <li>Only the words contained within paragraph text were counted; headers, references, and addenda were excluded.</li>
+        <li>The count reflects the number of paragraphs that include a mention of COVID.</li>
+    </ol>
+    </div>
     <script>
     const chart_labels = [
         {% for agency in agencies %}

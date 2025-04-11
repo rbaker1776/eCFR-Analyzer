@@ -70,7 +70,7 @@ const sectionBarChart = new Chart(bar_ctx, {
     data: {
         labels: topLabels,
         datasets: [{
-            label: 'Word Count per Agency',
+            label: 'Word Count per Agency (Top 20)',
             data: topValues,
             backgroundColor: gradientColors,
             borderColor: '#fff',
@@ -133,6 +133,7 @@ const amendments_chart = new Chart(amendment_ctx, {
             },
             y: {
                 beginAtZero: true,
+                max: 10000,
                 title: {
                     display: true,
                     text: 'Total Regulatory Amendments Passed'
@@ -171,6 +172,9 @@ const covid_amendments_chart = new Chart(covid_ctx, {
             },
             y: {
                 beginAtZero: true,
+                ticks:{
+                    stepSize: 1
+                },
                 title: {
                     display: true,
                     text: 'Total COVID Related Regulatory Amendments Passed'
