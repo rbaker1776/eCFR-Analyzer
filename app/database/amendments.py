@@ -1,8 +1,8 @@
 import json
 import sqlite3
-from client import fetch_amendments, fetch_amendment_meta, count_amendments
-from database.dbutils import db_connect
-from database.amendment import Amendment
+from app.services.client import fetch_amendments, fetch_amendment_meta, count_amendments
+from app.database.dbutils import db_connect
+from app.models.amendment import Amendment
 
 
 def create_amendment_table():

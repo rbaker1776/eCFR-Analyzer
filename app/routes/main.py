@@ -1,13 +1,13 @@
-from flask import Flask, render_template, request
+from flask import Blueprint, render_template, Flask, request
 import sqlite3
-from database.database import fetch_all
-from utils import format_number
+from app.database.database import fetch_all
+from app.services.utils import format_number
 
 
-app = Flask(__name__)
+main_bp = Blueprint("main", __name__)
 
 
-@app.route("/")
+@main_bp.route("/")
 def index():
     data = fetch_all()
     agencies = data["agencies"]
@@ -51,7 +51,3 @@ def index():
         covid_months = [k for k, v in sorted_covid_dates],
         covid_counts = [v for k, v in sorted_covid_dates]
     )
-
-
-if __name__ == "__main__":
-    app.run()

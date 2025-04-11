@@ -1,9 +1,9 @@
 import sqlite3
-from database.dbutils import db_connect
-from database.ecfr_counts import ecfr_query, ecfr_db_init
-from database.agencies import agency_query, agency_db_init
-from database.amendments import amendment_query, amendment_db_init 
-from database.page import Page
+from app.database.dbutils import db_connect
+from app.database.ecfr_counts import ecfr_query, ecfr_db_init
+from app.database.agencies import agency_query, agency_db_init
+from app.database.amendments import amendment_query, amendment_db_init 
+from app.models.page import Page
 from collections import Counter
 import math
 

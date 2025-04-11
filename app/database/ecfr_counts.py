@@ -1,7 +1,7 @@
 import sqlite3
-from client import title_xml, word_count
-from database.dbutils import db_connect
-from database.page import Page
+from app.services.client import title_xml, word_count
+from app.database.dbutils import db_connect
+from app.models.page import Page
 
 
 def create_ecfr_counts_table():

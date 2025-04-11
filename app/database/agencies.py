@@ -1,7 +1,7 @@
 import sqlite3
-from client import fetch_agencies
-from database.dbutils import db_connect
-from database.agency import Agency
+from app.services.client import fetch_agencies
+from app.database.dbutils import db_connect
+from app.models.agency import Agency
 import re
 
 

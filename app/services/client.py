@@ -2,8 +2,8 @@ import requests
 import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from database.agency import Agency
-from database.amendment import Amendment
+from app.models.agency import Agency
+from app.models.amendment import Amendment
 
 
 BASE_URL = "https://www.ecfr.gov"
