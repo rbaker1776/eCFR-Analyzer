@@ -3,11 +3,12 @@ import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from database.agency import Agency
+from database.amendment import Amendment
 
 
 BASE_URL = "https://www.ecfr.gov"
 
-date = datetime(2025, 1, 20)
+date = datetime(2025, 4, 4)
 
 
 def fetch_agencies() -> list:
@@ -62,6 +63,12 @@ def word_count(xml: ET.Element) -> int:
     text = '\n'.join(paragraphs)
     return len(text.split())
 
+
+def fetch_amendments(title: int) -> str:
+    response = requests.get(f"{BASE_URL}/api/versioner/v1/versions/title-{title}.json")
+    response.raise_for_status()
+    amendments = [Amendment.from_json(a) for a in response.json()["content_versions"]]
+    return amendments
 
 if __name__ == "__main__":
     print(title_chapters(2)[0])

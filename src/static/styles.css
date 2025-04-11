@@ -1,0 +1,40 @@
+* {
+    color: #f9f9f9;
+}
+
+body {
+    background: linear-gradient(135deg, #1e1e1e, #121212);
+}
+
+.card {
+    background-color: #222;
+    color: #ffd700;
+    border: none;
+}
+
+.sub-agency-row {
+    font-style: italic;
+}
+.toggle-arrow {
+    font-size: 1.2rem;
+    padding: 0.2rem 0.5rem;
+    background: none;
+    border: none;
+}
+
+.toggle-arrow.collapsed::before {
+    content: '\25B6';
+}
+
+.toggle-arrow:not(.collapsed)::before {
+    content: '\25BC';
+}
+.form-control::placeholder {
+    color: #888;
+}
+
+canvas {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 10px;
+}

@@ -5,48 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>eCFR Analyzer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        * {
-            color: #f9f9f9;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1e1e1e, #121212);
-        }
-
-        .card {
-            background-color: #222;
-            color: #ffd700;
-            border: none;
-        }
-
-        .sub-agency-row {
-            font-style: italic;
-        }
-        .toggle-arrow {
-            font-size: 1.2rem;
-            padding: 0.2rem 0.5rem;
-            background: none;
-            border: none;
-        }
-
-        .toggle-arrow.collapsed::before {
-            content: '\25B6';
-        }
-
-        .toggle-arrow:not(.collapsed)::before {
-            content: '\25BC';
-        }
-        .form-control::placeholder {
-            color: #888;
-        }
-
-        canvas {
-            background-color: #1a1a1a;
-            border-radius: 10px;
-            padding: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -81,7 +40,7 @@
             </div>
         </div>
 
-        <div class="my-4">
+        <div class="my-4" style="max-height: 80vh">
             <h3 class="text-center">Section Distribution by Agency</h3>
             <canvas id="sectionPieChart" height="200"></canvas>
         </div>
@@ -153,122 +112,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function sort_by(key, order)
-        {
-            const url = new URL(window.location.href);
-            url.searchParams.set("sort", key);
-            url.searchParams.set("order", order);
-            window.location.href = url.toString();
-        }
+    const chart_labels = [
+        {% for agency in agencies %}
+            "{{ agency['abbrev'] or agency['name'] }}",
+        {% endfor %}
+    ]
 
-        function search_table()
-        {
-            const input = document.getElementById("search-input").value.toLowerCase();
-            const rows = document.querySelectorAll("#agencies-table tbody tr");
-
-            for (let i = 0; i < rows.length; i++)
-            {
-                const row = rows[i];
-                if (row.classList.contains("collapse"))
-                {
-                    row.style.display = ""; // leave as is, we handle child visibility through parent
-                    continue;
-                }
-
-                const cells = row.querySelectorAll("td");
-                const match = Array.from(cells).some(cell =>
-                    cell.textContent.toLowerCase().includes(input)
-                );
-
-                row.style.display = match ? "" : "none";
-
-                const collapseButton = row.querySelector(".toggle-arrow");
-                if (collapseButton)
-                {
-                    const collapseId = collapseButton.getAttribute("data-bs-target");
-                    const childRow = document.querySelector(collapseId);
-                    if (childRow)
-                    {
-                        childRow.style.display = match ? "" : "none";
-                    }
-                }
-            }
-        }
-
-        const chart_labels = [
-            {% for agency in agencies %}
-                "{{ agency['abbrev'] or agency['name'] }}",
-            {% endfor %}
-        ]
-
-        const chart_data = [
-            {% for agency in agencies %}
-                {{ agency['word_count'] }},
-            {% endfor %}
-        ];
-
-        // group entries < .9% into other
-        const total = chart_data.reduce((sum, val) => sum + val, 0);
-
-        const groupedLabels = [];
-        const groupedData = [];
-        let otherTotal = 0;
-
-        chart_labels.forEach((label, index) => {
-            const value = chart_data[index];
-            const percent = value / total;
-
-            if (percent < 0.009) {
-                otherTotal += value;
-            } else {
-                groupedLabels.push(label);
-                groupedData.push(value);
-            }
-        });
-
-        if (otherTotal > 0) {
-            groupedLabels.push("Other");
-            groupedData.push(otherTotal);
-        }
-
-        const ctx = document.getElementById('sectionPieChart').getContext('2d');
-
-        const sectionPieChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: groupedLabels,
-                datasets: [{
-                    label: 'Sections per Agency',
-                    data: groupedData,
-                    backgroundColor: [
-                        "#FFD700", "#FFC300", "#FFB000", "#FFA500", "#FF8C00",
-                        "#DAA520", "#B8860B", "#E1C16E", "#F0E68C", "#FFFACD",
-                        "#FFD700", "#FFC300", "#FFB000", "#FFA500", "#FF8C00"
-                    ].slice(0, groupedLabels.length),
-
-                    borderColor: '#fff',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'right'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const total = context.chart._metasets[0].total;
-                                const value = context.parsed;
-                                const percentage = ((value / total) * 100).toFixed(2);
-                                return `${context.label}: ${value.toLocaleString()} words (${percentage}%)`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
+    const chart_data = [
+        {% for agency in agencies %}
+            {{ agency['word_count'] }},
+        {% endfor %}
+    ];
     </script>
+    <script src="../static/core.js"></script>
 </body>
 </html>

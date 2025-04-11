@@ -72,7 +72,7 @@ def ecfr_process_elements(parent, tag):
 
 
 def ecfr_db_init():
-    for title in range(35, 40):
+    for title in range(1, 51):
         print(f"(ecfr_db_init): processing title {title}...")
         if title == 35: # title 35 is reserved
             continue
