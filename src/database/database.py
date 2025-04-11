@@ -14,9 +14,6 @@ def fetch_all() -> dict:
         agency["child_count"] = len(agency["children"])
 
         for reference in agency["cfr_references"]:
-            if agency["abbrev"] == "EPA":
-                print(reference)
-                print(ecfr_query(Page.from_json(reference)))
             stats = ecfr_query(Page.from_json(reference))
             for field in ["word_count", "section_count", "covid_count"]:
                 agency[field] += stats[field]
@@ -31,6 +28,7 @@ def fetch_all() -> dict:
             agencies[i]["children"][-1]["name"] = agencies[i]["children"][-1]["name"].split(',')[0]
 
     for agency in agencies:
+        agency["abbrev"] = agency["abbrev"] or ""
         for child in agency["children"]:
             for field in ["word_count", "section_count", "covid_count"]:
                 agency[field] += child[field]

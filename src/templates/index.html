@@ -5,64 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>eCFR Analyzer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        canvas {
-            max-width: 500px;
-            margin: 0 auto;
+        * {
+            color: #f9f9f9;
         }
+
+        body {
+            background: linear-gradient(135deg, #1e1e1e, #121212);
+        }
+
+        .card {
+            background-color: #222;
+            color: #ffd700;
+            border: none;
+        }
+
         .sub-agency-row {
-            background-color: #f0f0f0;
             font-style: italic;
         }
+        .toggle-arrow {
+            font-size: 1.2rem;
+            padding: 0.2rem 0.5rem;
+            background: none;
+            border: none;
+        }
+
+        .toggle-arrow.collapsed::before {
+            content: '\25B6';
+        }
+
+        .toggle-arrow:not(.collapsed)::before {
+            content: '\25BC';
+        }
+        .form-control::placeholder {
+            color: #888;
+        }
+
+        canvas {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 10px;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container mt-5">
         <h1 class="text-center">eCFR Analyzer</h1>
         <div class="container mt-5">
 
-        <h1>Agency Distribution</h1>
-        <canvas id="agencyPie"></canvas>
+        <div class="row text-center my-5">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <h1 class="display-4">{{ 234234 }}</h1>
+                        <p class="lead text-muted">Total Sections</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <h1 class="display-4">{{ 234234234 }}</h1>
+                        <p class="lead text-muted">Total Words</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <h1 class="display-4">{{ 234234234 }}</h1>
+                        <p class="lead text-muted">COVID Mentions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <script>
-            const ctx = document.getElementById('agencyPie').getContext('2d');
-            const agencyPie = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Treasury', 'Agriculture', 'Commerce', 'Defense'],
-                    datasets: [{
-                        label: 'Agency Size',
-                        data: [10, 20, 30, 40],  // Replace with dynamic data from Flask if needed
-                        backgroundColor: ['#FF2400', '#FFA500', '#4CAF50', '#2196F3'],
-                        borderColor: '#000',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#fff'
-                            }
-                        }
-                    }
-                }
-            });
-        </script>
+        <div class="my-4">
+            <h3 class="text-center">Section Distribution by Agency</h3>
+            <canvas id="sectionPieChart" height="200"></canvas>
+        </div>
 
-        <h1 class="text-center">Responsive Table with Rows</h1>
+        <h1 class="text-center">Government Agencies</h1>
         
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
+        <div class="mb-3">
+            <input type="text" class="form-control" id="search-input" placeholder="Search agencies..." oninput="search_table()">
+        </div>
+
+        <table class="table table-bordered" id="agencies-table">
+            <thead>
                 <tr>
-                    <th>Agency</th>
-                    <th>Abbrev.</th>
-                    <th>Child Agencies Count</th>
-                    <th>Section Count</th>
-                    <th>Word Count</th>
-                    <th>Covid Mention Count</th>
+                    <th style="width: 37%" onclick="sort_by('name', 'up')">Agency</th>
+                    <th style="width: 13%">Abbreviation</th>
+                    <th style="width: 15%" onclick="sort_by('child_count', 'down')">Child Agencies Count</th>
+                    <th style="width: 10%" onclick="sort_by('section_count', 'down')">Section Count</th>
+                    <th style="width: 10%" onclick="sort_by('word_count', 'down')">Word Count</th>
+                    <th style="width: 15%" onclick="sort_by('covid_count', 'down')">Covid Mention Count</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,50 +108,43 @@
                     <tr>
                         <td><strong>{{ agency["name"] }}</strong></td>
                         <td>{{ agency["abbrev"] }}</td>
-                        <td>{{ agency["child_count"] }}</td>
+                        <td>
+                            {{ agency["child_count"] }}
+                            {% if agency["child_count"] > 0 %}
+                                <button class="btn toggle-arrow collapsed text-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                                </button>
+                            {% endif %}
+                        </td>
                         <td>{{ agency["section_count"] }}</td>
                         <td>{{ agency["word_count"] }}</td>
                         <td>{{ agency["covid_count"] }}</td>
                     </tr>
                     {% if agency["child_count"] > 0 %}
-                        <tr>
-                            <td colspan="6">
-                                <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
-                                    Toggle Child Agencies ({{ agency["child_count"] }})
-                                </button>
+                        <tr class="collapse" id="collapse{{ loop.index }}">
+                            <td colspan="6" class="p-0">
+                                <table class="table mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 52%">Agency</th>
+                                            <th style="width: 10%">Abbrev.</th>
+                                            <th style="width: 12%">Section Count</th>
+                                            <th style="width: 12%">Word Count</th>
+                                            <th style="width: 13%">Covid Mention Count</th>
+                                        </tr>
+                                    </thead>
+                                    {% for child in agency["children"] %}
+                                        <tr class="sub-agency-row">
+                                            <td>{{ child["name"] }}</td>
+                                            <td>{{ child["abbrev"] }}</td>
+                                            <td>{{ child["section_count"] }}</td>
+                                            <td>{{ child["word_count"] }}</td>
+                                            <td>{{ child["covid_count"] }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
                             </td>
                         </tr>
                     {% endif %}
-                    {% for child in agency["children"] %}
-                    <tr id="collapse{{ loop.index }}" class="collapse">
-                        <td colspan="6">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Sub-Agency Name</th>
-                                        <th>Abbrev.</th>
-                                        <th>Child Agencies Count</th>
-                                        <th>Section Count</th>
-                                        <th>Word Count</th>
-                                        <th>Covid Mention Count</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for child in agency["children"] %}
-                                    <tr class="sub-agency-row">
-                                        <td>{{ child["name"] }}</td>
-                                        <td>{{ child["abbrev"] }}</td>
-                                        <td>{{ child["child_count"] }}</td>
-                                        <td>{{ child["section_count"] }}</td>
-                                        <td>{{ child["word_count"] }}</td>
-                                        <td>{{ child["covid_count"] }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
@@ -121,5 +152,123 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function sort_by(key, order)
+        {
+            const url = new URL(window.location.href);
+            url.searchParams.set("sort", key);
+            url.searchParams.set("order", order);
+            window.location.href = url.toString();
+        }
+
+        function search_table()
+        {
+            const input = document.getElementById("search-input").value.toLowerCase();
+            const rows = document.querySelectorAll("#agencies-table tbody tr");
+
+            for (let i = 0; i < rows.length; i++)
+            {
+                const row = rows[i];
+                if (row.classList.contains("collapse"))
+                {
+                    row.style.display = ""; // leave as is, we handle child visibility through parent
+                    continue;
+                }
+
+                const cells = row.querySelectorAll("td");
+                const match = Array.from(cells).some(cell =>
+                    cell.textContent.toLowerCase().includes(input)
+                );
+
+                row.style.display = match ? "" : "none";
+
+                const collapseButton = row.querySelector(".toggle-arrow");
+                if (collapseButton)
+                {
+                    const collapseId = collapseButton.getAttribute("data-bs-target");
+                    const childRow = document.querySelector(collapseId);
+                    if (childRow)
+                    {
+                        childRow.style.display = match ? "" : "none";
+                    }
+                }
+            }
+        }
+
+        const chart_labels = [
+            {% for agency in agencies %}
+                "{{ agency['abbrev'] or agency['name'] }}",
+            {% endfor %}
+        ]
+
+        const chart_data = [
+            {% for agency in agencies %}
+                {{ agency['word_count'] }},
+            {% endfor %}
+        ];
+
+        // group entries < .9% into other
+        const total = chart_data.reduce((sum, val) => sum + val, 0);
+
+        const groupedLabels = [];
+        const groupedData = [];
+        let otherTotal = 0;
+
+        chart_labels.forEach((label, index) => {
+            const value = chart_data[index];
+            const percent = value / total;
+
+            if (percent < 0.009) {
+                otherTotal += value;
+            } else {
+                groupedLabels.push(label);
+                groupedData.push(value);
+            }
+        });
+
+        if (otherTotal > 0) {
+            groupedLabels.push("Other");
+            groupedData.push(otherTotal);
+        }
+
+        const ctx = document.getElementById('sectionPieChart').getContext('2d');
+
+        const sectionPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: groupedLabels,
+                datasets: [{
+                    label: 'Sections per Agency',
+                    data: groupedData,
+                    backgroundColor: [
+                        "#FFD700", "#FFC300", "#FFB000", "#FFA500", "#FF8C00",
+                        "#DAA520", "#B8860B", "#E1C16E", "#F0E68C", "#FFFACD",
+                        "#FFD700", "#FFC300", "#FFB000", "#FFA500", "#FF8C00"
+                    ].slice(0, groupedLabels.length),
+
+                    borderColor: '#fff',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.chart._metasets[0].total;
+                                const value = context.parsed;
+                                const percentage = ((value / total) * 100).toFixed(2);
+                                return `${context.label}: ${value.toLocaleString()} words (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
