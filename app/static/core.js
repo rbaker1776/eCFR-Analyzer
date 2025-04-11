@@ -45,16 +45,13 @@ const combinedData = chart_labels.map((label, idx) => {
     return { label: label, value: chart_data[idx] };
 });
 
-// Sort by value descending and take top 20
 const top20 = combinedData
     .sort((a, b) => b.value - a.value)
     .slice(0, 20);
 
-// Separate labels and values again
 const topLabels = top20.map(item => item.label);
 const topValues = top20.map(item => item.value);
 
-// Generate gradient colors from orange (#FFA500) to yellow (#FFFF00)
 const gradientColors = topValues.map((_, idx) => {
     const ratio = idx / (topValues.length - 1);
     const r = 255;
