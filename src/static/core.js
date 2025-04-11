@@ -66,9 +66,9 @@ if (otherTotal > 0) {
     groupedData.push(otherTotal);
 }
 
-const ctx = document.getElementById('sectionPieChart').getContext('2d');
+const pie_ctx = document.getElementById('sectionPieChart').getContext('2d');
 
-const sectionPieChart = new Chart(ctx, {
+const sectionPieChart = new Chart(pie_ctx, {
     type: 'pie',
     data: {
         labels: groupedLabels,
@@ -87,6 +87,7 @@ const sectionPieChart = new Chart(ctx, {
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false, // control height freely
         plugins: {
             legend: {
                 position: 'right',
@@ -104,6 +105,44 @@ const sectionPieChart = new Chart(ctx, {
                         const percentage = ((value / total) * 100).toFixed(2);
                         return `${context.label}: ${value.toLocaleString()} words (${percentage}%)`;
                     }
+                }
+            }
+        }
+    }
+});
+
+
+amendment_ctx = document.getElementById('lineChart').getContext('2d');
+
+const chart = new Chart(amendment_ctx, {
+    type: 'line',
+    data: {
+        labels: amendmentLabels,
+        datasets: [{
+            label: "Total Regulatory Amendments",
+            data: amendmentData,
+            borderColor: '#fdbb24',
+            backgroundColor: 'rgba(251, 130, 28, 0.2)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false, // control height freely
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Date (YYYY-MM)'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Total Regulatory Amendments Passed'
                 }
             }
         }

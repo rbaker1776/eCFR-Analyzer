@@ -2,10 +2,13 @@ import sqlite3
 from database.dbutils import db_connect
 from database.ecfr_counts import ecfr_query, ecfr_db_init
 from database.agencies import agency_query, agency_db_init
+from database.amendments import amendment_query, amendment_db_init 
 from database.page import Page
+from collections import Counter
+import math
 
 
-def fetch_all() -> dict:
+def fetch_agencies() -> dict:
     agencies = agency_query()
     for i, agency in enumerate(agencies):
         agency["word_count"] = 0
@@ -36,8 +39,26 @@ def fetch_all() -> dict:
     return agencies
 
 
+def fetch_amendment_dates() -> dict:
+    amendments = amendment_query()
+    dates = [amendment["amendment_date"] for amendment in amendments]
+    print(len(dates))
+    months = [f"{i:4}-{j:02}" for i in range(2003, 2026) for j in range(1, 13)]
+    counts = Counter(date[:7] for date in dates)
+    for month in months:
+        if month not in counts:
+            counts[month] = 0
+    counts = { k: v for k, v in counts.items() if k >= "2015-01-01" }
+    return counts
+
+
+def fetch_all() -> dict:
+    return {
+        "agencies": fetch_agencies(),
+        "amendment_dates": fetch_amendment_dates(),
+    }
+
+
 if __name__ == "__main__":
-    #ecfr_db_init()
-    #agency_db_init()
     fetch_all()
     pass

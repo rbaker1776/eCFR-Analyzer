@@ -1,5 +1,6 @@
+import json
 import sqlite3
-from client import fetch_amendments
+from client import fetch_amendments, fetch_amendment_meta, count_amendments
 from database.dbutils import db_connect
 from database.amendment import Amendment
 
@@ -49,6 +50,62 @@ def amendment_db_init():
             amendments_insert_data(amendment)
 
 
+def amendment_build_query(amendment: Amendment):
+    query = "SELECT * FROM amendments WHERE 1=1"
+    params = []
+
+    if amendment is None:
+        return query, params
+
+    if amendment.date != "":
+        query += " AND date = ?"
+        params.append(amendment.date)
+    if amendment.amendment_date != "":
+        query += " AND amendment_date = ?"
+        params.append(amendment.amendment_date)
+    if amendment.identifier != "":
+        query += " AND identifier = ?"
+        params.append(amendment.identifier)
+    if amendment.name != "":
+        query += " AND name = ?"
+        params.append(amendment.name)
+    if amendment.substantive != "":
+        query += " AND substantive = ?"
+        params.append(amendment.substantive)
+    if amendment.removed != "":
+        query += " AND removed = ?"
+        parmas.append(amendment.removed)
+    if amendment.title != "":
+        query += " AND title = ?"
+        params.append(amendment.title)
+
+    return query, params
+
+def amendment_query(amendment: Amendment=None):
+    conn = db_connect()
+    cursor = conn.cursor()
+
+    query, params = amendment_build_query(amendment)
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+
+    conn.commit()
+    conn.close()
+
+    return [{
+        "date": amendment[0],
+        "amendment_date": amendment[1],
+        "identifier": amendment[2],
+        "name": amendment[3],
+        "substantive": amendment[4],
+        "removed": amendment[5],
+        "title": amendment[6],
+    } for amendment in rows]
+
+
 if __name__ == "__main__":
-    create_amendment_table()
-    amendment_db_init()
+    #print(amendment_query(Amendment.from_json({})))
+    print(count_amendments())
+    #create_amendment_table()
+    #amendment_db_init()
+    pass

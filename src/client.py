@@ -70,6 +70,21 @@ def fetch_amendments(title: int) -> str:
     amendments = [Amendment.from_json(a) for a in response.json()["content_versions"]]
     return amendments
 
+def fetch_amendment_meta(title: int):
+    response = requests.get(f"{BASE_URL}/api/versioner/v1/versions/title-{title}.json")
+    response.raise_for_status()
+    return response.json()["meta"]
+
+def count_amendments() -> int:
+    n = 0
+    for title in range(1, 51):
+        print(f"(count_amendments): processing title {title}...", end='')
+        n += int(fetch_amendment_meta(title)["result_count"])
+        print(n)
+    return n
+
+
 if __name__ == "__main__":
-    print(title_chapters(2)[0])
-#    print([s.attrib["TYPE"] for s in title_xml(2).findall(f".//DIV2")])
+    #print(title_chapters(2)[0])
+    #print([s.attrib["TYPE"] for s in title_xml(2).findall(f".//DIV2")])
+    pass

@@ -11,38 +11,51 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center">eCFR Analyzer</h1>
+
+        <p style="margin-top: 1em">
+        Howdy!
+        The eCFR (Electronic Code of Federal Regulations) provides insight into the Code of Federal Regulations.
+        The Code of Federal Regulations (CFR) is the culmination of the federal government's laws.
+        Heres what they've been up to:
+        </p>
+
         <div class="container mt-5">
 
         <div class="row text-center my-5">
             <div class="col-md-4 mb-4">
                 <div class="card shadow-lg border-0">
                     <div class="card-body">
-                        <h1 class="display-4">{{ 234234 }}</h1>
-                        <p class="lead text-muted">Total Sections</p>
+                        <h1 class="display-4">{{ meta["section_count"] }}</h1>
+                        <p style="font-size: 14pt;">Total Sections</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
                 <div class="card shadow-lg border-0">
                     <div class="card-body">
-                        <h1 class="display-4">{{ 234234234 }}</h1>
-                        <p class="lead text-muted">Total Words</p>
+                        <h1 class="display-4">{{ meta["word_count"] }}</h1>
+                        <p style="font-size: 14pt;">Total Words</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
                 <div class="card shadow-lg border-0">
                     <div class="card-body">
-                        <h1 class="display-4">{{ 234234234 }}</h1>
-                        <p class="lead text-muted">COVID Mentions</p>
+                        <h1 class="display-4">{{ meta["covid_count"] }}</h1>
+                        <p style="font-size: 14pt;">COVID Mentions</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="my-4" style="max-height: 80vh">
-            <h3 class="text-center">Section Distribution by Agency</h3>
-            <canvas id="sectionPieChart" height="200"></canvas>
+        <div class="my-4" style="max-height: 50vh; padding: 2rem;margin: 0 auto;">
+            <h2 class="text-center">Word Count Distribution by Agency</h2>
+            <canvas id="sectionPieChart"></canvas>
+        </div>
+
+        <h2 style="text-align: center;">Monthly Data Over Time</h2>
+        <div style="max-height: 30vh; padding: 2rem;min-height:30rem">
+            <canvas id="lineChart"></canvas>
         </div>
 
         <h1 class="text-center">Government Agencies</h1>
@@ -74,8 +87,8 @@
                                 </button>
                             {% endif %}
                         </td>
-                        <td>{{ agency["section_count"] }}</td>
-                        <td>{{ agency["word_count"] }}</td>
+                        <td>{{ agency["pretty_section_count"] }}</td>
+                        <td>{{ agency["pretty_word_count"] }}</td>
                         <td>{{ agency["covid_count"] }}</td>
                     </tr>
                     {% if agency["child_count"] > 0 %}
@@ -95,8 +108,8 @@
                                         <tr class="sub-agency-row">
                                             <td>{{ child["name"] }}</td>
                                             <td>{{ child["abbrev"] }}</td>
-                                            <td>{{ child["section_count"] }}</td>
-                                            <td>{{ child["word_count"] }}</td>
+                                            <td>{{ child["pretty_section_count"] }}</td>
+                                            <td>{{ child["pretty_word_count"] }}</td>
                                             <td>{{ child["covid_count"] }}</td>
                                         </tr>
                                     {% endfor %}
@@ -109,8 +122,6 @@
         </table>
     </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     const chart_labels = [
         {% for agency in agencies %}
@@ -123,6 +134,10 @@
             {{ agency['word_count'] }},
         {% endfor %}
     ];
+
+    const amendmentData = {{ amendment_counts|tojson }}
+    const amendmentLabels = {{ amendment_months|tojson }}
+
     </script>
     <script src="../static/core.js"></script>
 </body>

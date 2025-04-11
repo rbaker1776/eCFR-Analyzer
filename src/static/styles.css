@@ -38,3 +38,7 @@ canvas {
     border-radius: 10px;
     padding: 10px;
 }
+
+.display-4 {
+    font-weight: 500;
+}
