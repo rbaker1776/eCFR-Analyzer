@@ -11,122 +11,131 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center">eCFR Analyzer</h1>
-
-        <p style="margin-top: 1em">
-        Howdy!
-        The eCFR (Electronic Code of Federal Regulations) provides insight into the Code of Federal Regulations.
-        The Code of Federal Regulations (CFR) is the culmination of the federal government's laws.
-        Heres what they've been up to:
-        </p>
-
-        <div class="container mt-5">
-
-        <div class="row text-center my-5">
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-lg border-0">
-                    <div class="card-body">
-                        <h1 class="display-4">{{ meta["section_count"] }}</h1>
-                        <p style="font-size: 14pt;">Total Sections</p>
+        <div class="container my-5">
+            <p style="margin-top: 1em">
+            Howdy!
+            The eCFR (Electronic Code of Federal Regulations) provides insight into the Code of Federal Regulations.
+            The Code of Federal Regulations (CFR) is the culmination of the federal government's laws.
+            Heres what they've been up to:
+            </p>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body">
+                            <h1 class="display-4">{{ meta["section_count"] }}</h1>
+                            <p style="font-size: 14pt;">Total Sections</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-lg border-0">
-                    <div class="card-body">
-                        <h1 class="display-4">{{ meta["word_count"] }}</h1>
-                        <p style="font-size: 14pt;">Total Words</p>
+                <div class="col-md-4">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body">
+                            <h1 class="display-4">{{ meta["word_count"] }}</h1>
+                            <p style="font-size: 14pt;">Total Words</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-lg border-0">
-                    <div class="card-body">
-                        <h1 class="display-4">{{ meta["covid_count"] }}</h1>
-                        <p style="font-size: 14pt;">COVID Mentions</p>
+                <div class="col-md-4">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body">
+                            <h1 class="display-4">{{ meta["covid_count"] }}</h1>
+                            <p style="font-size: 14pt;">COVID Mentions</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="my-4" style="max-height: 50vh; padding: 2rem;margin: 0 auto;">
-            <h2 class="text-center">Word Count Distribution by Agency</h2>
+        <div class="my-5" style="max-height: 50vh; padding: 2rem; margin: 0 auto;">
+            <div class="my-1">
+                <h2>Word Count Distribution by Agency</h2>
+                <p>
+                The ultimate showdown to see which agency is the worst at shutting up.
+                </p>
+            </div>
             <canvas id="sectionPieChart"></canvas>
         </div>
 
-        <h2 style="text-align: center;">Monthly Data Over Time</h2>
-        <div style="max-height: 30vh; padding: 2rem;min-height:30rem">
-            <canvas id="lineChart"></canvas>
+        <div class="my-5" style="max-height: 30vh; padding: 2rem; margin: 0 auto;">
+            <div class="my-1">
+                <h2>Regulatory Amendments Over Time</h2>
+                <p></p>
+            </div>
+            <canvas id="amendments-chart"></canvas>
         </div>
 
-        <h2 style="text-align: center;">Monthly Data Over Time</h2>
-        <div style="max-height: 30vh; padding: 2rem;min-height:30rem">
-            <canvas id="lineChart2"></canvas>
+        <div class="my-5" style="max-height: 30vh; padding: 2rem; margin: 0 auto;">
+            <div class="my-1">
+                <h2>COVID Related Regulatory Amendments Over Time</h2>
+                <p></p>
+            </div>
+            <canvas id="covid-amendments-chart"></canvas>
         </div>
 
-        <h1 class="text-center">Government Agencies</h1>
-        
-        <div class="mb-3">
-            <input type="text" class="form-control" id="search-input" placeholder="Search agencies..." oninput="search_table()">
-        </div>
-
-        <table class="table table-bordered" id="agencies-table">
-            <thead>
-                <tr>
-                    <th style="width: 37%" onclick="sort_by('name', 'up')">Agency</th>
-                    <th style="width: 13%">Abbreviation</th>
-                    <th style="width: 15%" onclick="sort_by('child_count', 'down')">Child Agencies Count</th>
-                    <th style="width: 10%" onclick="sort_by('section_count', 'down')">Section Count</th>
-                    <th style="width: 10%" onclick="sort_by('word_count', 'down')">Word Count</th>
-                    <th style="width: 15%" onclick="sort_by('covid_count', 'down')">Covid Mention Count</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for agency in agencies %}
+        <div class="container my-5">
+            <div class="my-2">
+                <h1>Government Agencies</h1>
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" id="search-input" placeholder="Search agencies..." oninput="search_table()">
+            </div>
+            <table class="table table-bordered" id="agencies-table">
+                <thead>
                     <tr>
-                        <td><strong>{{ agency["name"] }}</strong></td>
-                        <td>{{ agency["abbrev"] }}</td>
-                        <td>
-                            {{ agency["child_count"] }}
-                            {% if agency["child_count"] > 0 %}
-                                <button class="btn toggle-arrow collapsed text-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
-                                </button>
-                            {% endif %}
-                        </td>
-                        <td>{{ agency["pretty_section_count"] }}</td>
-                        <td>{{ agency["pretty_word_count"] }}</td>
-                        <td>{{ agency["covid_count"] }}</td>
+                        <th style="width: 37%" onclick="sort_by('name', 'up')">Agency</th>
+                        <th style="width: 13%">Abbreviation</th>
+                        <th style="width: 15%" onclick="sort_by('child_count', 'down')">Child Agencies Count</th>
+                        <th style="width: 10%" onclick="sort_by('section_count', 'down')">Section Count</th>
+                        <th style="width: 10%" onclick="sort_by('word_count', 'down')">Word Count</th>
+                        <th style="width: 15%" onclick="sort_by('covid_count', 'down')">Covid Mention Count</th>
                     </tr>
-                    {% if agency["child_count"] > 0 %}
-                        <tr class="collapse" id="collapse{{ loop.index }}">
-                            <td colspan="6" class="p-0">
-                                <table class="table mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 52%">Agency</th>
-                                            <th style="width: 10%">Abbrev.</th>
-                                            <th style="width: 12%">Section Count</th>
-                                            <th style="width: 12%">Word Count</th>
-                                            <th style="width: 13%">Covid Mention Count</th>
-                                        </tr>
-                                    </thead>
-                                    {% for child in agency["children"] %}
-                                        <tr class="sub-agency-row">
-                                            <td>{{ child["name"] }}</td>
-                                            <td>{{ child["abbrev"] }}</td>
-                                            <td>{{ child["pretty_section_count"] }}</td>
-                                            <td>{{ child["pretty_word_count"] }}</td>
-                                            <td>{{ child["covid_count"] }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
+                </thead>
+                <tbody>
+                    {% for agency in agencies %}
+                        <tr>
+                            <td><strong>{{ agency["name"] }}</strong></td>
+                            <td>{{ agency["abbrev"] }}</td>
+                            <td>
+                                {{ agency["child_count"] }}
+                                {% if agency["child_count"] > 0 %}
+                                    <button class="btn toggle-arrow collapsed text-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                                    </button>
+                                {% endif %}
                             </td>
+                            <td>{{ agency["pretty_section_count"] }}</td>
+                            <td>{{ agency["pretty_word_count"] }}</td>
+                            <td>{{ agency["covid_count"] }}</td>
                         </tr>
-                    {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    </div>
+                        {% if agency["child_count"] > 0 %}
+                            <tr class="collapse" id="collapse{{ loop.index }}">
+                                <td colspan="6" class="p-0">
+                                    <table class="table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 52%">Agency</th>
+                                                <th style="width: 10%">Abbreviation</th>
+                                                <th style="width: 12%">Section Count</th>
+                                                <th style="width: 12%">Word Count</th>
+                                                <th style="width: 13%">Covid Mention Count</th>
+                                            </tr>
+                                        </thead>
+                                        {% for child in agency["children"] %}
+                                            <tr class="sub-agency-row">
+                                                <td>{{ child["name"] }}</td>
+                                                <td>{{ child["abbrev"] }}</td>
+                                                <td>{{ child["pretty_section_count"] }}</td>
+                                                <td>{{ child["pretty_word_count"] }}</td>
+                                                <td>{{ child["covid_count"] }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     <script>
     const chart_labels = [
         {% for agency in agencies %}
@@ -148,5 +157,6 @@
 
     </script>
     <script src="../static/core.js"></script>
+    </div>
 </body>
 </html>

@@ -112,9 +112,9 @@ const sectionPieChart = new Chart(pie_ctx, {
 });
 
 
-amendment_ctx = document.getElementById('lineChart').getContext('2d');
+amendment_ctx = document.getElementById('amendments-chart').getContext('2d');
 
-const chart = new Chart(amendment_ctx, {
+const amendments_chart = new Chart(amendment_ctx, {
     type: 'line',
     data: {
         labels: amendmentLabels,
@@ -150,9 +150,9 @@ const chart = new Chart(amendment_ctx, {
 });
 
 
-covid_ctx = document.getElementById('lineChart2').getContext('2d');
+covid_ctx = document.getElementById('covid-amendments-chart').getContext('2d');
 
-const chart2 = new Chart(covid_ctx, {
+const covid_amendments_chart = new Chart(covid_ctx, {
     type: 'line',
     data: {
         labels: covidAmendmentLabels,
